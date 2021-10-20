@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+
+  chat_app_nginx:
+    build:
+      context: ../
+      dockerfile: ./docker/services/nginx/Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ./services/nginx/logs:/var/log/nginx
+      - ../services/frontend:/var/www/html/frontend
+    environment:
+      - NGINX_HOST=${NGINX_HOST}
+    ports:
+      - "80:80"
+    depends_on:
+      - chat_app_users_api
+      - chat_app_chat_api
+
+  chat_app_users_api:
+    build:
+      context: ../
+      dockerfile: ./docker/services/users_api/Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ./services/users_api/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ../services/users_api:/var/www/html/users_api
+    depends_on:
+      - chat_app_mysql
+
+  chat_app_chat_api:
+    build:
+      context: ../
+      dockerfile: ./docker/services/chat_api/Dockerfile
+    restart: unless-stopped
+    volumes:
+        - ./services/chat_api/php.ini:/usr/local/etc/php/conf.d/php.ini
+        - ../services/chat_api:/var/www/html/chat_api
+    depends_on:
+        - chat_app_mysql
+
+  chat_app_phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: chat_app_phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=${MYSQL_HOST}
+    restart: unless-stopped
+    depends_on:
+      - chat_app_mysql
+
+  chat_app_mysql:
+    image: mysql:${MYSQL_VERSION}
+    container_name: ${MYSQL_HOST}
+    env_file:
+      - .env
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    ports:
+      - "8989:3306"
+    volumes:
+      - ./services/mysql/data:/var/lib/mysql

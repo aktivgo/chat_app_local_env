@@ -1,0 +1,4 @@
+.idea
+services
+docker/services/mysql/data
+docker/services/nginx/logs
