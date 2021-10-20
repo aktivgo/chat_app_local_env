@@ -13,6 +13,7 @@ init:
 	@git clone https://github.com/aktivgo/chat_app_users_api ./services/users_api && \
 	git clone https://github.com/aktivgo/chat_app_frontend ./services/frontend
 	@cd services/users_api/composer && composer install
+	@cd services/frontend/composer && composer install
 
 composer:
 	@cd services/users_api/composer && composer install

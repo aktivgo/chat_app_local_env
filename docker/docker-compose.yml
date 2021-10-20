@@ -24,7 +24,7 @@ services:
       dockerfile: ./docker/services/users_api/Dockerfile
     restart: unless-stopped
     volumes:
-      - ./services/users_api/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ./services/php.ini:/usr/local/etc/php/conf.d/php.ini
       - ../services/users_api:/var/www/html/users_api
     depends_on:
       - chat_app_mysql
@@ -35,10 +35,21 @@ services:
       dockerfile: ./docker/services/chat_api/Dockerfile
     restart: unless-stopped
     volumes:
-        - ./services/chat_api/php.ini:/usr/local/etc/php/conf.d/php.ini
-        - ../services/chat_api:/var/www/html/chat_api
+      - ./services/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ../services/chat_api:/var/www/html/chat_api
     depends_on:
-        - chat_app_mysql
+      - chat_app_mysql
+
+  chat_app_frontend:
+    build:
+      context: ../
+      dockerfile: ./docker/services/frontend/Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ./services/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ../services/frontend:/var/www/html
+    depends_on:
+      - chat_app_mysql
 
   chat_app_phpmyadmin:
     image: phpmyadmin/phpmyadmin
