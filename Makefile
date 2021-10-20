@@ -21,4 +21,4 @@ status:
 	@cd docker && docker-compose ps
 
 migrate_all_up:
-	@migrate -path=services/users_api/database/migrations/ -database "mysql://dev:dev@tcp(localhost:8989)/chat" up
+	@migrate -path=services/users_api/database/migrations/ -database "mysql://dev:dev@tcp(localhost:8787)/chat" up

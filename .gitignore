@@ -1,4 +1,4 @@
 .idea
-services
-docker/services/mysql/data
-docker/services/nginx/logs
+/services
+/docker/services/mysql/data
+/docker/services/nginx/logs
