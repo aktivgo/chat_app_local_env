@@ -3,13 +3,15 @@ version: '3.8'
 services:
 
   chat_app_nginx:
-    build:
-      context: ../
-      dockerfile: ./docker/services/nginx/Dockerfile
+    image: nginx:1.19-alpine
     restart: unless-stopped
     volumes:
-      - ./services/nginx/logs:/var/log/nginx
+      - ./services/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./services/nginx/sites-available:/etc/nginx/sites-available
+      - ./services/nginx/logs/users_api:/var/log/nginx/users_api
+      - ./services/nginx/logs/frontend:/var/log/nginx/frontend
       - ../services/frontend:/var/www/html/frontend
+      - ../services/users_api:/var/www/html/users_api
     environment:
       - NGINX_HOST=${NGINX_HOST}
     ports:
@@ -19,10 +21,10 @@ services:
       - chat_app_chat_api
 
   chat_app_users_api:
-    build:
-      context: ../
-      dockerfile: ./docker/services/users_api/Dockerfile
+    image: nanoninja/php-fpm:latest
     restart: unless-stopped
+    env_file:
+      - .env
     volumes:
       - ./services/php.ini:/usr/local/etc/php/conf.d/php.ini
       - ../services/users_api:/var/www/html/users_api
@@ -30,9 +32,7 @@ services:
       - chat_app_mysql
 
   chat_app_chat_api:
-    build:
-      context: ../
-      dockerfile: ./docker/services/chat_api/Dockerfile
+    image: nanoninja/php-fpm:latest
     restart: unless-stopped
     volumes:
       - ./services/php.ini:/usr/local/etc/php/conf.d/php.ini
@@ -41,13 +41,11 @@ services:
       - chat_app_mysql
 
   chat_app_frontend:
-    build:
-      context: ../
-      dockerfile: ./docker/services/frontend/Dockerfile
+    image: nanoninja/php-fpm:latest
     restart: unless-stopped
     volumes:
       - ./services/php.ini:/usr/local/etc/php/conf.d/php.ini
-      - ../services/frontend:/var/www/html
+      - ../services/frontend:/var/www/html/frontend
     depends_on:
       - chat_app_mysql
 
@@ -77,4 +75,4 @@ services:
     ports:
       - "8787:3306"
     volumes:
-      - ./services/mysql/data:/var/lib/mysql8
+      - ./services/mysql/data:/var/lib/mysql
