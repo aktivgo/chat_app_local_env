@@ -10,15 +10,15 @@ services:
       - ./services/nginx/sites-available:/etc/nginx/sites-available
       - ./services/nginx/logs/users_api:/var/log/nginx/users_api
       - ./services/nginx/logs/frontend:/var/log/nginx/frontend
-      - ../services/frontend:/var/www/html/frontend
       - ../services/users_api:/var/www/html/users_api
+      - ../services/frontend:/var/www/html/frontend
     environment:
       - NGINX_HOST=${NGINX_HOST}
     ports:
       - "80:80"
     depends_on:
       - chat_app_users_api
-      - chat_app_chat_api
+      - chat_app_frontend
 
   chat_app_users_api:
     image: nanoninja/php-fpm:latest
@@ -28,15 +28,6 @@ services:
     volumes:
       - ./services/php.ini:/usr/local/etc/php/conf.d/php.ini
       - ../services/users_api:/var/www/html/users_api
-    depends_on:
-      - chat_app_mysql
-
-  chat_app_chat_api:
-    image: nanoninja/php-fpm:latest
-    restart: unless-stopped
-    volumes:
-      - ./services/php.ini:/usr/local/etc/php/conf.d/php.ini
-      - ../services/chat_api:/var/www/html/chat_api
     depends_on:
       - chat_app_mysql
 
