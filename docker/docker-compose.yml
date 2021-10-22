@@ -34,6 +34,8 @@ services:
   chat_app_frontend:
     image: nanoninja/php-fpm:latest
     restart: unless-stopped
+    env_file:
+      - .env
     volumes:
       - ./services/php.ini:/usr/local/etc/php/conf.d/php.ini
       - ../services/frontend:/var/www/html/frontend
