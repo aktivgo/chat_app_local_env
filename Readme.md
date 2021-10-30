@@ -4,5 +4,4 @@
     - make init
     - make start
     - make migrate_all_up
-    - make start_server
 2. Приложение запускается по адресу chat.loc/

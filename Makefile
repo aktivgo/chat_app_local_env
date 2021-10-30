@@ -1,9 +1,6 @@
 start:
 	@cd docker && docker-compose up -d
 
-start_server:
-	@cd services/chat_api && node server.js
-
 down:
 	@cd docker && docker-compose down
 

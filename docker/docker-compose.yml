@@ -42,6 +42,20 @@ services:
     depends_on:
       - chat_app_mysql
 
+  chat_app_chat_api:
+    build:
+      context: ../
+      dockerfile: ./docker/services/node/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ../services/chat_api:/var/www/html/chat_api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - chat_app_mysql
+
   chat_app_phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: chat_app_phpmyadmin
